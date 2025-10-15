@@ -69,7 +69,7 @@ module AD9122_SPI_tb;
     write_req = 0;
     ad_rw_addr = 8'd0;
     w_ad_data = 8'd0;
-    AD_SDI = 1'bz; // high-impedance when not driving
+    AD_SDI = 1'b1; // high-impedance when not driving
     prev_csb = 1'b1;
     bitcnt = 0;
     shift_in = 8'd0;
@@ -123,7 +123,7 @@ module AD9122_SPI_tb;
   // Drive AD_SDI during read-data phase. Change AD_SDI on falling edge of AD_SCLK
   always @(negedge AD_SCLK or posedge rstn) begin
     if (!rstn) begin
-      AD_SDI <= 1'bz;
+      AD_SDI <= 1'b1;
     end else begin
       // only drive when controller indicates it is reading data (SDIO_OUT_EN==0)
       if (AD_CSB == 1'b0 && SDIO_OUT_EN == 1'b0 && expecting_read) begin
@@ -132,7 +132,7 @@ module AD9122_SPI_tb;
         send_bit_idx = send_bit_idx - 1;
       end else begin
         // release line when not driving
-        AD_SDI <= 1'bz;
+        AD_SDI <= 1'b1;
       end
     end
   end
@@ -152,7 +152,7 @@ module AD9122_SPI_tb;
       bitcnt <= 0;
       shift_in <= 8'd0;
       expecting_read <= 0;
-      AD_SDI <= 1'bz;
+      AD_SDI <= 1'b1;
     end
   end
 
@@ -201,7 +201,7 @@ module AD9122_SPI_tb;
       if (read_data !== datas[i]) begin
         $display("[TB] MISMATCH at addr 0x%02h: expected 0x%02h got 0x%02h", addrs[i], datas[i], read_data);
       end
-      #200; // small gap between transactions
+      #2000; // small gap between transactions
     end
 
     $display("[TB] Test complete at time %0t", $time);
