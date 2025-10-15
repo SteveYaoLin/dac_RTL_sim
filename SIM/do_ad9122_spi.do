@@ -14,8 +14,8 @@ if {[file exists work]} {
 }
 vlib work
 vmap work work
-vlog -work work +define+questasim +acc +fullpar AD9122_SPI_tb.v ../AD9122_SPI.v -l vlog.g
-vsim -c -l vsim.log +define+questasim -voptargs=+acc -fsmdebug work.AD9122_SPI_tb
+vlog -work work +define+questasim +acc +fullpar AD9122_combined_tb.v ../AD9122_SPI.v ../AD9122_reg_config.v -l vlog.g
+vsim -c -l vsim.log +define+questasim -voptargs=+acc -fsmdebug work.AD9122_combined_tb
 
 # 1. 在运行 DO 文件后直接进行 2ms 的仿真
 run 20ms

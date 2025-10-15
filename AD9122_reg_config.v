@@ -1,4 +1,5 @@
-`include "Register_address.v"
+// `include "Register_address.v"
+// https://mdnice.com/writing/3fd4daaf14884e7592d6e5dfa2e13f89
 module AD9122_reg_config(
  input                   clk         ,
  input                   rstn        ,
