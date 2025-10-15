@@ -10,11 +10,9 @@ module AD9122_SPI(
  output  reg             r_w_end     ,//读/写 完使能，读写完产生一个时钟上升沿                              
  output  reg           AD_SCLK     ,
  output  reg           AD_CSB      ,  
-
- input                  AD_SDI     ,//separate SDIO input (device -> controller)
- output                 AD_SDO     ,//separate SDIO output (controller -> device)
- output                 SDIO_OUT_EN//1=controller drives AD_SDO, 0=controller should not drive (top-level may tri-state)
-     );
+ 
+ inout                  AD_SDIO 
+    );
  
  localparam IDLE     = 6'b000001 ;//空闲状态
  localparam R_SPI   = 6'b000010 ;
@@ -36,7 +34,7 @@ module AD9122_SPI(
  reg [7:0] sclk_cnt;
  reg [7:0] sclk_bit_cnt;//每次产生18个sclk时钟(16个spi时钟+2个无用时钟)
  reg [7:0] read_data_r;  
-// SDIO_OUT_EN is exposed as an output port (see module ports)
+ wire SDIO_OUT_EN;//1-output 0-input输入输出使能
 
 always @(posedge clk)
   if (~rstn)
@@ -92,13 +90,11 @@ always @(*)
 //操作寄存器，负责写sdio部分
 always@(posedge clk)
   if(~rstn)begin   
-    //   sdio_out  <= 1'bz;
-      sdio_out  <= 1'b1;
+      sdio_out  <= 1'bz;
    read_data_r <= 8'b0;
   end
   else if(next_state == IDLE || next_state == W_END || next_state == R_END)
-    //   sdio_out <= 1'bz;
-      sdio_out  <= 1'b1;
+      sdio_out <= 1'bz;
   else if(next_state == R_SPI)begin
        case(sclk_bit_cnt) 
              8'd0   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= ad_rw_addr[7];
@@ -109,20 +105,20 @@ always@(posedge clk)
              8'd5   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= ad_rw_addr[2];
              8'd6   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= ad_rw_addr[1];
              8'd7   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= ad_rw_addr[0];
-             default : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= 1'b1    ;
+             default : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= 1'bz    ;
        endcase
   end
   
-    else if(next_state == R_SPI_DATA)begin
+  else if(next_state == R_SPI_DATA)begin
   case(sclk_bit_cnt)
-        8'd8   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[7] <= AD_SDI  ;
-                         8'd9   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[6] <= AD_SDI  ;
-                         8'd10   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[5] <= AD_SDI  ;
-                         8'd11   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[4] <= AD_SDI  ;
-                         8'd12   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[3] <= AD_SDI  ;
-                         8'd13   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[2] <= AD_SDI  ;
-                         8'd14   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[1] <= AD_SDI  ;
-                         8'd15   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[0] <= AD_SDI  ;
+    8'd8   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[7] <= AD_SDIO  ;
+             8'd9   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[6] <= AD_SDIO  ;
+             8'd10   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[5] <= AD_SDIO  ;
+             8'd11   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[4] <= AD_SDIO  ;
+             8'd12   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[3] <= AD_SDIO  ;
+             8'd13   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[2] <= AD_SDIO  ;
+             8'd14   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[1] <= AD_SDIO  ;
+             8'd15   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r[0] <= AD_SDIO  ;
     default : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) read_data_r <= read_data_r  ; 
   endcase
   end
@@ -146,14 +142,12 @@ always@(posedge clk)
              8'd13   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= w_ad_data[2] ;
              8'd14   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= w_ad_data[1] ;
              8'd15   : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= w_ad_data[0] ;
-    default : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= 1'b1    ;//sdio_out <= 1'b1;
+    default : if(sclk_cnt_en && sclk_cnt == (sclk_cnt_half - 8'd3)) sdio_out <= 1'bz    ;//sdio_out <= 1'b1;
       endcase
   end
 //操作寄存器，负责读sdio输出8位数据部分
-assign SDIO_OUT_EN = (next_state == R_SPI_DATA) ? 1'b0 : 1'b1;               
-// Drive separate output pin with the internal sdio_out value. Top-level should
-// use SDIO_OUT_EN to tri-state the physical pin when SDIO_OUT_EN==0.
-assign AD_SDO = sdio_out;
+assign SDIO_OUT_EN = (next_state ==R_SPI_DATA) ? 1'b0 : 1'b1;               
+assign AD_SDIO = (SDIO_OUT_EN) ? sdio_out : 1'bz;
 
 assign read_data = (sclk_bit_cnt==8'd16) ? read_data_r : read_data;
 
