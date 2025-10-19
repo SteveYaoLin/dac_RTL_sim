@@ -9,9 +9,9 @@
 #vsim -c work.AD9122_SPI_tb -do "run -all; quit -f"
 #
 
-if {[file exists work]} {
-    file delete -force work
-}
+#if {[file exists work]} {
+#    file delete -force work
+#}
 vlib work
 vmap work work
 vlog -work work +define+questasim +acc +fullpar ad9122_spi_wr_config_tb.sv ../41727804_RTL/ad9122_spi_wr_config.v ../41727804_RTL/spi_wr_rd_single.v -l vlog.g
