@@ -223,26 +223,26 @@ always@ (posedge clk_in) begin
                 START : begin dataout_valid <= 1'b1; datain_ready <= 1'b0; end
                 WAIT_GAP : begin dataout_valid <= dataout_valid; datain_ready <= datain_ready; end
                 WR_STA_0   : begin r_wr_infodata <= {3'b000,13'h0000,8'h18}; end  // 此行至WR_STA_67为ad9516官方上位机生成的寄存器参数，复制粘贴进来8位data部分即可
-                WR_STA_1   : begin r_wr_infodata <= {3'b000,13'h0001,8'h00}; end
+                WR_STA_1   : begin r_wr_infodata <= {3'b000,13'h0001,8'h00}; end    //
                 WR_STA_2   : begin r_wr_infodata <= {3'b000,13'h0002,8'h10}; end
                 WR_STA_3   : begin r_wr_infodata <= {3'b000,13'h0003,8'h43}; end
                 WR_STA_4   : begin r_wr_infodata <= {3'b000,13'h0004,8'h00}; end
-                WR_STA_5   : begin r_wr_infodata <= {3'b000,13'h0010,8'h7C}; end
-                WR_STA_6   : begin r_wr_infodata <= {3'b000,13'h0011,8'h01}; end
-                WR_STA_7   : begin r_wr_infodata <= {3'b000,13'h0012,8'h00}; end
+                WR_STA_5   : begin r_wr_infodata <= {3'b000,13'h0010,8'h7C}; end //PLL设置
+                WR_STA_6   : begin r_wr_infodata <= {3'b000,13'h0011,8'h01}; end //PLL设置
+                WR_STA_7   : begin r_wr_infodata <= {3'b000,13'h0012,8'h00}; end //  
                 WR_STA_8   : begin r_wr_infodata <= {3'b000,13'h0013,8'h08}; end
                 WR_STA_9   : begin r_wr_infodata <= {3'b000,13'h0014,8'h0C}; end
                 WR_STA_10  : begin r_wr_infodata <= {3'b000,13'h0015,8'h00}; end
-                WR_STA_11  : begin r_wr_infodata <= {3'b000,13'h0016,8'h05}; end
-                WR_STA_12  : begin r_wr_infodata <= {3'b000,13'h0017,8'hB4}; end
-                WR_STA_13  : begin r_wr_infodata <= {3'b000,13'h0018,8'h07}; end
-                WR_STA_14  : begin r_wr_infodata <= {3'b000,13'h0019,8'h00}; end
-                WR_STA_15  : begin r_wr_infodata <= {3'b000,13'h001A,8'h45}; end
-                WR_STA_16  : begin r_wr_infodata <= {3'b000,13'h001B,8'hE0}; end
-                WR_STA_17  : begin r_wr_infodata <= {3'b000,13'h001C,8'h02}; end
+                WR_STA_11  : begin r_wr_infodata <= {3'b000,13'h0016,8'h05}; end //VCO设置
+                WR_STA_12  : begin r_wr_infodata <= {3'b000,13'h0017,8'hB4}; end //VCO设置
+                WR_STA_13  : begin r_wr_infodata <= {3'b000,13'h0018,8'h07}; end //VCO设置
+                WR_STA_14  : begin r_wr_infodata <= {3'b000,13'h0019,8'h00}; end //VCO设置
+                WR_STA_15  : begin r_wr_infodata <= {3'b000,13'h001A,8'h45}; end //VCO设置
+                WR_STA_16  : begin r_wr_infodata <= {3'b000,13'h001B,8'hE0}; end //VCO设置
+                WR_STA_17  : begin r_wr_infodata <= {3'b000,13'h001C,8'h02}; end 
                 WR_STA_18  : begin r_wr_infodata <= {3'b000,13'h001D,8'h0A}; end
                 WR_STA_19  : begin r_wr_infodata <= {3'b000,13'h001E,8'h00}; end
-                WR_STA_20  : begin r_wr_infodata <= {3'b000,13'h001F,8'h0E}; end
+                WR_STA_20  : begin r_wr_infodata <= {3'b000,13'h001F,8'h0E}; end //VCO设置
                 WR_STA_21  : begin r_wr_infodata <= {3'b000,13'h00A0,8'h01}; end
                 WR_STA_22  : begin r_wr_infodata <= {3'b000,13'h00A1,8'h00}; end
                 WR_STA_23  : begin r_wr_infodata <= {3'b000,13'h00A2,8'h00}; end
@@ -291,13 +291,13 @@ always@ (posedge clk_in) begin
                 WR_STA_66  : begin r_wr_infodata <= {3'b000,13'h0231,8'h00}; end
                 WR_STA_67  : begin r_wr_infodata <= {3'b000,13'h0232,8'h00}; end
                 WR_STA_68  : begin r_wr_infodata <= {3'b000,13'h0018,8'h06}; end //此行开始和之后的寄存器必须赋值一次，以进行vco校准，并将SPI数据更新至AD9516芯片内部
-                WR_STA_69  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end
-                WR_STA_70  : begin r_wr_infodata <= {3'b000,13'h0018,8'h07}; end 
-                WR_STA_71  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end 
+                WR_STA_69  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end //Update all registers
+                WR_STA_70  : begin r_wr_infodata <= {3'b000,13'h0018,8'h07}; end // 启动vco校准
+                WR_STA_71  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end //Update all registers
                 WR_STA_72  : begin r_wr_infodata <= {3'b000,13'h0230,8'h01}; end //以下4行进行soft sync，使时钟输出同步
-                WR_STA_73  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end  
-                WR_STA_74  : begin r_wr_infodata <= {3'b000,13'h0230,8'h00}; end 
-                WR_STA_75  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end                                                                              
+                WR_STA_73  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end //Update all registers
+                WR_STA_74  : begin r_wr_infodata <= {3'b000,13'h0230,8'h00}; end //恢复正常工作状态
+                WR_STA_75  : begin r_wr_infodata <= {3'b000,13'h0232,8'h01}; end   //Update all registers                                                                           
                 END : begin dataout_valid <= 1'b0; datain_ready <= 1'b0; end                       
             endcase
         end
