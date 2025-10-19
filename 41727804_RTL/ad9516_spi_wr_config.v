@@ -116,7 +116,7 @@ reg dataout_valid;
 reg[7:0] state_cur = 8'd0, state_next = 8'd0;
 
 reg[23:0] r_wr_infodata;
-reg r_wrrd_mode_sel;
+reg [1:0] r_wrrd_mode_sel;
 wire dataout_ready;
 always@ (posedge clk_in) begin
     if(!rst_n)
@@ -215,7 +215,7 @@ always@ (posedge clk_in) begin
     if(!rst_n) begin
        datain_ready <= 1'b0;
        dataout_valid <= 1'b0;
-       r_wrrd_mode_sel <= 1'b0; //select spi_write_mode
+       r_wrrd_mode_sel <= 2'b0; //select spi_write_mode
     end
     else begin
         case(state_cur)

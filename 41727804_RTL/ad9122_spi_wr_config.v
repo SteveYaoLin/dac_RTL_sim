@@ -176,7 +176,7 @@ always@ (posedge clk_in) begin
        dataout_valid <= 1'b0;
        rst_delay_cnt <= 10'd0;
        o_reset <= 1'b0;
-       r_wrrd_mode_sel <= 1'b0;//select spi_write_mode
+       r_wrrd_mode_sel <= 2'b0;//select spi_write_mode
        delay_timer_valid <= 1'b0;
     end
     else begin
