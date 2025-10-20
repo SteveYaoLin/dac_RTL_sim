@@ -41,7 +41,7 @@ module ad9122_spi_wr_config_tb;
   // drive clock
   initial begin
     clk_in = 0;
-    forever #5 clk_in = ~clk_in; // 100MHz
+    forever #10 clk_in = ~clk_in; // 50MHz
   end
 
   // reset sequence
@@ -124,7 +124,7 @@ module ad9122_spi_wr_config_tb;
   initial begin
     #20000;
     $display("[TB] Timeout - finishing simulation");
-    $finish;
+    // $finish;
   end
 
 endmodule

@@ -189,10 +189,11 @@ always@ (posedge clk_in) begin
                     //For spi write: bit15 , bit14~8 : address , bit7~0 : reg data   
                 WR_STA_0   : begin r_wr_infodata <= {1'h0,7'h00,8'hA0};   r_wrrd_mode_sel <= SPI_WRITE_MODE;  end  // sdio bidirect           
                 WR_STA_1   : begin r_wr_infodata <= {1'h0,7'h00,8'h80}; end  //  soft reset
-                WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h00}; end  //  complet-binary , word mode                 
+                WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h00}; end  //  complet-binary , word mode  
+                //WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h80}; end  //  binary , word mode                 
                 WR_STA_3   : begin r_wr_infodata <= {1'h0,7'h04,8'h00}; end  //  disable any interrupt           
                 WR_STA_4   : begin r_wr_infodata <= {1'h0,7'h05,8'h00}; end  //  disable any interrupt        
-                WR_STA_5  :  begin r_wr_infodata <= {1'h0,7'h08,8'hA0}; end  //  enable DACCLK input correct
+                WR_STA_5  :  begin r_wr_infodata <= {1'h0,7'h08,8'hA0}; end  //  enable DACCLK input correct 
                 WR_STA_6  :  begin r_wr_infodata <= {1'h0,7'h0A,8'h00}; end  //  disable PLL
                 WR_STA_7  :  begin r_wr_infodata <= {1'h0,7'h0C,8'h00}; end  //  PLL bandwith select, CP-current select
                 WR_STA_8   : begin r_wr_infodata <= {1'h0,7'h0D,8'h00}; end  //  PLL control parameter
