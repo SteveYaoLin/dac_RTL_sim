@@ -187,9 +187,9 @@ always@ (posedge clk_in) begin
                 START : begin dataout_valid <= 1'b1; datain_ready <= 1'b0; end
                 WAIT_GAP : begin dataout_valid <= dataout_valid; datain_ready <= datain_ready; end                
                     //For spi write: bit15 , bit14~8 : address , bit7~0 : reg data   
-                WR_STA_0   : begin r_wr_infodata <= {1'h0,7'h00,8'hA0};   r_wrrd_mode_sel <= SPI_WRITE_MODE;  end  // sdio bidirect           
-                WR_STA_1   : begin r_wr_infodata <= {1'h0,7'h00,8'h80}; end  //  soft reset
-                WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h00}; end  //  complet-binary , word mode  
+                WR_STA_0   : begin r_wr_infodata <= {1'h0,7'h00,8'h20};   r_wrrd_mode_sel <= SPI_WRITE_MODE;  end  // sdio input           
+                WR_STA_1   : begin r_wr_infodata <= {1'h0,7'h00,8'h00}; end  //  soft reset
+                WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h00}; end  //  twos complement format,WORD
                 //WR_STA_2   : begin r_wr_infodata <= {1'h0,7'h03,8'h80}; end  //  binary , word mode                 
                 WR_STA_3   : begin r_wr_infodata <= {1'h0,7'h04,8'h00}; end  //  disable any interrupt           
                 WR_STA_4   : begin r_wr_infodata <= {1'h0,7'h05,8'h00}; end  //  disable any interrupt        
@@ -201,22 +201,22 @@ always@ (posedge clk_in) begin
                 WR_STA_10  : begin r_wr_infodata <= {1'h0,7'h11,8'h00}; end  // Sync disable
                 WR_STA_11  : begin r_wr_infodata <= {1'h0,7'h16,8'h02}; end  // DCI Delay mode = 0B'10
                 WR_STA_12  : begin r_wr_infodata <= {1'h0,7'h1B,8'hA4}; end  // Bypass premodule and NCO, Don't send I data to Q data
-                WR_STA_13  : begin r_wr_infodata <= {1'h0,7'h1C,8'h00}; end  // HB1 select, enable interplot *2  mode = 00
-                WR_STA_14  : begin r_wr_infodata <= {1'h0,7'h1D,8'h00}; end  // HB2 select, enable interplot *2  mode = 000000
+                WR_STA_13  : begin r_wr_infodata <= {1'h0,7'h1C,8'h04}; end  // x4 mode
+                WR_STA_14  : begin r_wr_infodata <= {1'h0,7'h1D,8'h24}; end  // from start up of datasheet
                 WR_STA_15  : begin r_wr_infodata <= {1'h0,7'h1E,8'h01}; end  // bypass HB3
                 WR_STA_16  : begin r_wr_infodata <= {1'h0,7'h30,8'h00}; end  // NCO value FTW LSB 
                 WR_STA_17  : begin r_wr_infodata <= {1'h0,7'h31,8'h00}; end  // NCO value FTW 
                 WR_STA_18  : begin r_wr_infodata <= {1'h0,7'h32,8'h00}; end  // NCO value FTW 
                 WR_STA_19  : begin r_wr_infodata <= {1'h0,7'h33,8'h00}; end  // NCO value FTW  MSB
-                WR_STA_20  : begin r_wr_infodata <= {1'h0,7'h36,8'h01}; end  //  update NCO
-                WR_STA_21  : begin r_wr_infodata <= {1'h0,7'h36,8'h00}; end  // 
+                WR_STA_20  : begin r_wr_infodata <= {1'h0,7'h36,8'h01}; end  //  
+                WR_STA_21  : begin r_wr_infodata <= {1'h0,7'h36,8'h00}; end  // update NCO
                 
-                WR_STA_31  : begin  r_wr_infodata <= {1'h0,7'h40,8'hFF}; end
-                WR_STA_32  : begin  r_wr_infodata <= {1'h0,7'h41,8'h03}; end
-                WR_STA_33  : begin  r_wr_infodata <= {1'h0,7'h44,8'hFF}; end
-                WR_STA_34  : begin  r_wr_infodata <= {1'h0,7'h45,8'h03}; end
+                WR_STA_31  : begin  r_wr_infodata <= {1'h0,7'h40,8'h00}; end // Q channel dac gain = 512
+                WR_STA_32  : begin  r_wr_infodata <= {1'h0,7'h41,8'h02}; end
+                WR_STA_33  : begin  r_wr_infodata <= {1'h0,7'h44,8'h00}; end // I channel dac gain = 512
+                WR_STA_34  : begin  r_wr_infodata <= {1'h0,7'h45,8'h02}; end
                 
-                WR_STA_22  : begin r_wr_infodata <= {1'h0,7'h10,8'h48}; end  //  setup sync data rate
+                WR_STA_22  : begin r_wr_infodata <= {1'h0,7'h10,8'hC8}; end  //  setup sync FIFO mode
                 WR_STA_23  : begin r_wr_infodata <= {1'h0,7'h17,8'h05}; end  //  FIFO write pointer phase offset following FIFO reset.
                 WR_STA_24  : begin r_wr_infodata <= {1'h0,7'h18,8'h02}; end  // FIFO soft align acknowledge
                 WR_STA_25 : begin  r_dac_spi_delay_cnt <= 16'd4;   r_wrrd_mode_sel <= SPI_DELAY_MODE;  end  // Delay for wait
