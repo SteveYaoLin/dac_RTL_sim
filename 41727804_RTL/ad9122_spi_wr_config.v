@@ -179,10 +179,11 @@ always@ (posedge clk_in) begin
        o_reset <= 1'b0;
        r_wrrd_mode_sel <= 2'b0;//select spi_write_mode
        delay_timer_valid <= 1'b0;
+       ad9122_finish    <= 1'b0;
     end
     else begin
         case(state_cur)
-                IDLE : begin  dataout_valid <= 1'b0; datain_ready <= 1'b1; rst_delay_cnt <= 10'd0; o_reset <= 1'b0; delay_timer_valid <= 1'b0;end
+                IDLE : begin  dataout_valid <= 1'b0; datain_ready <= 1'b1; rst_delay_cnt <= 10'd0; o_reset <= 1'b0; delay_timer_valid <= 1'b0;ad9122_finish <= 1'b0;end
                 PRE_REST_H: begin o_reset <= 1'b1; rst_delay_cnt <= rst_delay_cnt + 1'd1; end
                 PRE_REST_L: begin o_reset <= 1'b0; rst_delay_cnt <= rst_delay_cnt + 1'd1; end
                 START : begin dataout_valid <= 1'b1; datain_ready <= 1'b0; end
@@ -223,7 +224,7 @@ always@ (posedge clk_in) begin
                 WR_STA_25 : begin  r_dac_spi_delay_cnt <= 16'd4;   r_wrrd_mode_sel <= SPI_DELAY_MODE;  end  // Delay for wait
                 WR_STA_26 : begin r_rd_info <= {1'b1,7'h18};     r_wrrd_mode_sel <= SPI_READ_MODE;   end  //  Read address-0x18 reg
                 WR_STA_27  : begin r_wr_infodata <= {1'h0,7'h18,8'h00}; r_wrrd_mode_sel <= SPI_WRITE_MODE;  end  // 
-                WR_STA_28  : begin  r_rd_info <= {1'b1,7'h19}; r_wrrd_mode_sel <= SPI_READ_MODE; end  //  Read address-0x19 reg
+                WR_STA_28  : begin  r_rd_info <= {1'b1,7'h19}; r_wrrd_mode_sel <= SPI_READ_MODE; ad9122_finish <= 1'b1;end  //  Read address-0x19 reg
                 WR_STA_29  : begin r_wr_infodata <= {1'h0,7'h17,8'h06}; r_wrrd_mode_sel <= SPI_WRITE_MODE; end
                 WR_STA_30  : begin r_wr_infodata <= {1'h0,7'h17,8'h04}; r_wrrd_mode_sel <= SPI_WRITE_MODE; end
                 END : begin dataout_valid <= 1'b0; datain_ready <= 1'b0; rst_delay_cnt <= 10'd0; r_wrrd_mode_sel <= SPI_WRITE_MODE;end                       
@@ -255,16 +256,16 @@ spi_wr_rd_single #(
                     .hold_save_read(w_hold_save_read)
                );
  //
-ila_1 u_ila_1 (
-	.clk(clk_in), // input wire clk
-	.probe0(r_wr_infodata), // input wire [15:0]  probe0  
-	.probe1(state_cur), // input wire [2:0]  probe1 
-	.probe2(r_rd_info), // input wire [7:0]  probe2 
-	.probe3({o_sda_dir,o_sclk,io_sda,o_sda,dataout_ready,o_sen_n}), // input wire [0:0]  probe3 
-	.probe4(w_rd_data), // input wire [7:0]  probe4
-	.probe5(r_wrrd_mode_sel) // input wire [7:0]  probe5
-	// .probe6(w_sclk_test), // input wire [0:0]  probe6
-	// .probe7(w_hold_save_read) // input wire [0:0]  probe7 
+ ila_1 u_ila_1 (
+ 	.clk(clk_in), // input wire clk
+ 	.probe0(r_wr_infodata), // input wire [15:0]  probe0  
+ 	.probe1(state_cur), // input wire [2:0]  probe1 
+ 	.probe2(r_rd_info), // input wire [7:0]  probe2 
+ 	.probe3({o_sda_dir,o_sclk,io_sda,o_sda,dataout_ready,o_sen_n}), // input wire [0:0]  probe3 
+ 	.probe4(w_rd_data), // input wire [7:0]  probe4
+ 	.probe5(r_wrrd_mode_sel) // input wire [7:0]  probe5
+ 	// .probe6(w_sclk_test), // input wire [0:0]  probe6
+ 	// .probe7(w_hold_save_read) // input wire [0:0]  probe7 
 	
-	);// input wire [7:0]  probe5               
+ 	);// input wire [7:0]  probe5               
 endmodule
