@@ -28,7 +28,8 @@ module ad9516_spi_wr_config(
                         output  o_cs_n,
                         output  o_adk_rst,
                         input datain_valid,
-                        output reg datain_ready
+                        output reg datain_ready,
+                        output reg ad9516_conf_finish   // <--- new output: 2-cycle finish pulse at END
                         );      
                         
 localparam IDLE  = 8'd0;
@@ -118,6 +119,8 @@ reg[7:0] state_cur = 8'd0, state_next = 8'd0;
 reg[23:0] r_wr_infodata;
 reg [1:0] r_wrrd_mode_sel;
 wire dataout_ready;
+reg [1:0] finish_cnt; // counter to generate 2-cycle finish pulse
+
 always@ (posedge clk_in) begin
     if(!rst_n)
         state_cur <= IDLE;
@@ -216,6 +219,8 @@ always@ (posedge clk_in) begin
        datain_ready <= 1'b0;
        dataout_valid <= 1'b0;
        r_wrrd_mode_sel <= 2'b0; //select spi_write_mode
+       finish_cnt <= 2'd0;
+       ad9516_conf_finish <= 1'b0;
     end
     else begin
         case(state_cur)
@@ -301,7 +306,24 @@ always@ (posedge clk_in) begin
                 END : begin dataout_valid <= 1'b0; datain_ready <= 1'b0; end                       
             endcase
         end
-end  
+end
+
+// finish pulse generator: when state_cur == END start 2-cycle pulse
+always @ (posedge clk_in) begin
+    if (!rst_n) begin
+        finish_cnt <= 2'd0;
+        ad9516_conf_finish <= 1'b0;
+    end else begin
+        if ((state_cur == END) && (finish_cnt == 2'd0)) begin
+            finish_cnt <= 2'd2;
+            ad9516_conf_finish <= 1'b1;
+        end else if (finish_cnt != 2'd0) begin
+            finish_cnt <= finish_cnt - 1;
+            if (finish_cnt == 2'd1)
+                ad9516_conf_finish <= 1'b0;
+        end
+    end
+end
 
 assign o_adk_rst = 1'b0;
 

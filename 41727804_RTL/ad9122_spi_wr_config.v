@@ -31,7 +31,8 @@ module ad9122_spi_wr_config(
                         
                         input io_sda,
                         input datain_valid,
-                        output reg datain_ready
+                        output reg datain_ready,
+                        output reg ad9122_finish
                         ); 
 localparam IDLE             = 8'd0;
 localparam START            = 8'd1;
@@ -229,7 +230,7 @@ always@ (posedge clk_in) begin
             endcase                                                   
         end
 end  
-// spi µ×²ãÄ£¿é
+// spi ï¿½×²ï¿½Ä£ï¿½ï¿½
 spi_wr_rd_single #(
                     .SPI_INFO_LENGTH (8),
                     .SPI_DATA_LENGTH (8)
@@ -253,17 +254,17 @@ spi_wr_rd_single #(
                     .r_sclk(w_sclk_test),
                     .hold_save_read(w_hold_save_read)
                );
-//ila_0 myila_lmk_spi_inst (
-//	.clk(clk_in), // input wire clk
+ //
+ila_1 u_ila_1 (
+	.clk(clk_in), // input wire clk
+	.probe0(r_wr_infodata), // input wire [15:0]  probe0  
+	.probe1(state_cur), // input wire [2:0]  probe1 
+	.probe2(r_rd_info), // input wire [7:0]  probe2 
+	.probe3({o_sda_dir,o_sclk,io_sda,o_sda,dataout_ready,o_sen_n}), // input wire [0:0]  probe3 
+	.probe4(w_rd_data), // input wire [7:0]  probe4
+	.probe5(r_wrrd_mode_sel) // input wire [7:0]  probe5
+	// .probe6(w_sclk_test), // input wire [0:0]  probe6
+	// .probe7(w_hold_save_read) // input wire [0:0]  probe7 
 	
-//	.probe0(o_sclk), // input wire [0:0]  probe0  
-//	.probe1(o_sen_n), // input wire [0:0]  probe1 
-//	.probe2(io_sda), // input wire [0:0]  probe2 
-//	.probe3(o_sda_dir), // input wire [0:0]  probe3 
-//	.probe4(state_cur), // input wire [7:0]  probe4
-//	.probe5(w_rd_data), // input wire [7:0]  probe5
-//	.probe6(w_sclk_test), // input wire [0:0]  probe6
-//	.probe7(w_hold_save_read) // input wire [0:0]  probe7 
-	
-//	);// input wire [7:0]  probe5               
+	);// input wire [7:0]  probe5               
 endmodule
