@@ -203,8 +203,8 @@ always@ (posedge clk_in) begin
                 WR_STA_10  : begin r_wr_infodata <= {1'h0,7'h11,8'h00}; end  // Sync disable
                 WR_STA_11  : begin r_wr_infodata <= {1'h0,7'h16,8'h02}; end  // DCI Delay mode = 0B'10
                 WR_STA_12  : begin r_wr_infodata <= {1'h0,7'h1B,8'hA4}; end  // Bypass premodule and NCO, Don't send I data to Q data
-                WR_STA_13  : begin r_wr_infodata <= {1'h0,7'h1C,8'h04}; end  // x4 mode
-                WR_STA_14  : begin r_wr_infodata <= {1'h0,7'h1D,8'h24}; end  // from start up of datasheet
+                WR_STA_13  : begin r_wr_infodata <= {1'h0,7'h1C,8'h01}; end  // x1 mode  bypass HB1
+                WR_STA_14  : begin r_wr_infodata <= {1'h0,7'h1D,8'h01}; end  // bypass HB2
                 WR_STA_15  : begin r_wr_infodata <= {1'h0,7'h1E,8'h01}; end  // bypass HB3
                 WR_STA_16  : begin r_wr_infodata <= {1'h0,7'h30,8'h00}; end  // NCO value FTW LSB 
                 WR_STA_17  : begin r_wr_infodata <= {1'h0,7'h31,8'h00}; end  // NCO value FTW 
@@ -261,7 +261,7 @@ spi_wr_rd_single #(
  	.probe0(r_wr_infodata), // input wire [15:0]  probe0  
  	.probe1(state_cur), // input wire [2:0]  probe1 
  	.probe2(r_rd_info), // input wire [7:0]  probe2 
- 	.probe3({o_sda_dir,o_sclk,io_sda,o_sda,dataout_ready,o_sen_n}), // input wire [0:0]  probe3 
+ 	.probe3({o_sda_dir,o_sclk,io_sda,o_sda,ad9122_finish,o_sen_n}), // input wire [0:0]  probe3 
  	.probe4(w_rd_data), // input wire [7:0]  probe4
  	.probe5(r_wrrd_mode_sel) // input wire [7:0]  probe5
  	// .probe6(w_sclk_test), // input wire [0:0]  probe6

@@ -277,7 +277,8 @@ always@ (posedge clk_in) begin
                 WR_STA_47  : begin r_wr_infodata <= {3'b000,13'h0194,8'h00}; end
                 WR_STA_48  : begin r_wr_infodata <= {3'b000,13'h0195,8'h00}; end
                 WR_STA_49  : begin r_wr_infodata <= {3'b000,13'h0196,8'h11}; end
-                WR_STA_50  : begin r_wr_infodata <= {3'b000,13'h0197,8'h80}; end
+                // WR_STA_50  : begin r_wr_infodata <= {3'b000,13'h0197,8'h80}; end// Divider 2 = 0
+                WR_STA_50  : begin r_wr_infodata <= {3'b000,13'h0197,8'h00}; end // Divider 2 = 0, for 500MHz output
                 WR_STA_51  : begin r_wr_infodata <= {3'b000,13'h0198,8'h00}; end
                 WR_STA_52  : begin r_wr_infodata <= {3'b000,13'h0199,8'h11}; end
                 WR_STA_53  : begin r_wr_infodata <= {3'b000,13'h019A,8'h00}; end
